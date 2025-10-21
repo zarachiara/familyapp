@@ -1,0 +1,156 @@
+import { OnboardingTask } from '@/types/onboarding';
+
+export const defaultOnboardingTasks: OnboardingTask[] = [
+  // Daily Tasks
+  {
+    id: 'task-daily-1',
+    name: 'Cooking Dinner',
+    category: 'daily',
+    estimatedMinutes: 45,
+    defaultPoints: 25,
+  },
+  {
+    id: 'task-daily-2',
+    name: 'Washing Dishes',
+    category: 'daily',
+    estimatedMinutes: 20,
+    defaultPoints: 15,
+  },
+  {
+    id: 'task-daily-3',
+    name: 'Making Beds',
+    category: 'daily',
+    estimatedMinutes: 10,
+    defaultPoints: 10,
+  },
+  {
+    id: 'task-daily-4',
+    name: 'Tidying Living Room',
+    category: 'daily',
+    estimatedMinutes: 15,
+    defaultPoints: 10,
+  },
+  {
+    id: 'task-daily-5',
+    name: 'Taking Out Trash',
+    category: 'daily',
+    estimatedMinutes: 5,
+    defaultPoints: 5,
+  },
+  {
+    id: 'task-daily-6',
+    name: 'Pet Care (feeding, walking)',
+    category: 'daily',
+    estimatedMinutes: 30,
+    defaultPoints: 20,
+  },
+  {
+    id: 'task-daily-7',
+    name: 'Packing Lunches',
+    category: 'daily',
+    estimatedMinutes: 15,
+    defaultPoints: 10,
+  },
+  
+  // Weekly Tasks
+  {
+    id: 'task-weekly-1',
+    name: 'Grocery Shopping',
+    category: 'weekly',
+    estimatedMinutes: 90,
+    defaultPoints: 40,
+  },
+  {
+    id: 'task-weekly-2',
+    name: 'Laundry (wash, dry, fold)',
+    category: 'weekly',
+    estimatedMinutes: 120,
+    defaultPoints: 35,
+  },
+  {
+    id: 'task-weekly-3',
+    name: 'Vacuuming',
+    category: 'weekly',
+    estimatedMinutes: 45,
+    defaultPoints: 25,
+  },
+  {
+    id: 'task-weekly-4',
+    name: 'Bathroom Cleaning',
+    category: 'weekly',
+    estimatedMinutes: 60,
+    defaultPoints: 30,
+  },
+  {
+    id: 'task-weekly-5',
+    name: 'Mopping Floors',
+    category: 'weekly',
+    estimatedMinutes: 40,
+    defaultPoints: 25,
+  },
+  {
+    id: 'task-weekly-6',
+    name: 'Meal Planning',
+    category: 'weekly',
+    estimatedMinutes: 30,
+    defaultPoints: 20,
+  },
+  {
+    id: 'task-weekly-7',
+    name: 'Yard Work',
+    category: 'weekly',
+    estimatedMinutes: 60,
+    defaultPoints: 30,
+  },
+  {
+    id: 'task-weekly-8',
+    name: 'Changing Bed Sheets',
+    category: 'weekly',
+    estimatedMinutes: 30,
+    defaultPoints: 15,
+  },
+  
+  // Monthly Tasks
+  {
+    id: 'task-monthly-1',
+    name: 'Deep Kitchen Clean',
+    category: 'monthly',
+    estimatedMinutes: 120,
+    defaultPoints: 50,
+  },
+  {
+    id: 'task-monthly-2',
+    name: 'Organizing Closets',
+    category: 'monthly',
+    estimatedMinutes: 90,
+    defaultPoints: 40,
+  },
+  {
+    id: 'task-monthly-3',
+    name: 'Window Cleaning',
+    category: 'monthly',
+    estimatedMinutes: 60,
+    defaultPoints: 30,
+  },
+  {
+    id: 'task-monthly-4',
+    name: 'Car Maintenance',
+    category: 'monthly',
+    estimatedMinutes: 45,
+    defaultPoints: 25,
+  },
+  {
+    id: 'task-monthly-5',
+    name: 'Bill Payment & Budgeting',
+    category: 'monthly',
+    estimatedMinutes: 60,
+    defaultPoints: 30,
+  },
+  {
+    id: 'task-monthly-6',
+    name: 'Decluttering & Donations',
+    category: 'monthly',
+    estimatedMinutes: 90,
+    defaultPoints: 35,
+  },
+];

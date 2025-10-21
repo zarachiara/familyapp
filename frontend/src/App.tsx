@@ -11,6 +11,7 @@ import Fairness from "./pages/Fairness";
 import Templates from "./pages/Templates";
 import Family from "./pages/Family";
 import Settings from "./pages/Settings";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,20 +23,28 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AppProvider>
-          <div className="min-h-screen bg-gray-50">
-            <Header />
-            <main className="container mx-auto px-4 py-6">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/tasks" element={<Tasks />} />
-                <Route path="/fairness" element={<Fairness />} />
-                <Route path="/templates" element={<Templates />} />
-                <Route path="/family" element={<Family />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
+          <Routes>
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route
+              path="/*"
+              element={
+                <div className="min-h-screen bg-gray-50">
+                  <Header />
+                  <main className="container mx-auto px-4 py-6">
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/tasks" element={<Tasks />} />
+                      <Route path="/fairness" element={<Fairness />} />
+                      <Route path="/templates" element={<Templates />} />
+                      <Route path="/family" element={<Family />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </main>
+                </div>
+              }
+            />
+          </Routes>
         </AppProvider>
       </BrowserRouter>
     </TooltipProvider>

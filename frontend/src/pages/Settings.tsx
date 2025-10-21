@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bell, Calendar, Trash2 } from 'lucide-react';
+import { Bell, Calendar, Trash2, RefreshCw } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { showSuccess } from '@/utils/toast';
+import { Link } from 'react-router-dom';
 
 const Settings = () => {
   const { initializeApp } = useApp();
@@ -22,6 +23,26 @@ const Settings = () => {
         <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
         <p className="text-gray-600 mt-1">Manage your FamilyFlow preferences</p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <RefreshCw className="w-5 h-5" />
+            <span>Onboarding</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-600 mb-4">
+            Want to start fresh with a new household setup? Run through the onboarding process again
+            to redistribute tasks fairly using game theory.
+          </p>
+          <Link to="/onboarding">
+            <Button variant="outline">
+              Start Onboarding Process
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
