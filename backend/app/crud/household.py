@@ -1,7 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 import logging
 import uuid
 
@@ -31,7 +31,7 @@ async def create_household(
 
 async def get_household_by_id(
     db: AsyncIOMotorDatabase,
-    household_id: str | ObjectId
+    household_id: Union[str, ObjectId]
 ) -> Optional[dict]:
     """Get a household by ID."""
     if isinstance(household_id, str):
@@ -43,7 +43,7 @@ async def get_household_by_id(
 
 async def update_household_name(
     db: AsyncIOMotorDatabase,
-    household_id: str | ObjectId,
+    household_id: Union[str, ObjectId],
     name: str
 ) -> Optional[dict]:
     """Update household name."""
@@ -62,7 +62,7 @@ async def update_household_name(
 
 async def add_member(
     db: AsyncIOMotorDatabase,
-    household_id: str | ObjectId,
+    household_id: Union[str, ObjectId],
     member: dict
 ) -> Optional[dict]:
     """Add a member to household."""
@@ -86,7 +86,7 @@ async def add_member(
 
 async def remove_member(
     db: AsyncIOMotorDatabase,
-    household_id: str | ObjectId,
+    household_id: Union[str, ObjectId],
     member_id: str
 ) -> Optional[dict]:
     """Remove a member from household."""
@@ -105,7 +105,7 @@ async def remove_member(
 
 async def update_member_points(
     db: AsyncIOMotorDatabase,
-    household_id: str | ObjectId,
+    household_id: Union[str, ObjectId],
     member_id: str,
     points_delta: int,
     tasks_delta: int = 0

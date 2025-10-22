@@ -1,12 +1,13 @@
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from typing import Optional
 from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
 # Global database client and database instance
-_client: AsyncIOMotorClient | None = None
-_database: AsyncIOMotorDatabase | None = None
+_client: Optional[AsyncIOMotorClient] = None
+_database: Optional[AsyncIOMotorDatabase] = None
 
 
 async def connect_to_mongodb() -> None:

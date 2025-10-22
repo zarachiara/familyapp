@@ -1,7 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ async def get_user_by_email(
 
 async def get_user_by_id(
     db: AsyncIOMotorDatabase,
-    user_id: str | ObjectId
+    user_id: Union[str, ObjectId]
 ) -> Optional[dict]:
     """Get a user by ID."""
     if isinstance(user_id, str):
