@@ -5,6 +5,7 @@ import logging
 
 from app.config import settings
 from app.database import connect_to_mongodb, close_mongodb_connection, ping_database
+from app.routers import auth
 
 # Configure logging
 logging.basicConfig(
@@ -56,6 +57,9 @@ app.add_middleware(
 )
 
 logger.info(f"CORS enabled for origins: {settings.cors_origins_list}")
+
+# Include routers
+app.include_router(auth.router)
 
 
 @app.get("/healthz")
