@@ -191,6 +191,7 @@ const Onboarding = () => {
                 tasks={state.tasks}
                 members={state.members}
                 assignments={state.assignments}
+                ratings={state.ratings}
                 onReassignTask={reassignTask}
               />
             )}

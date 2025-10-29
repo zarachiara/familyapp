@@ -27,6 +27,7 @@ interface AppContextType {
   badges: Badge[];
   addTask: (task: Task) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
+  batchUpdateTasks: (updates: Array<{ taskId: string; updates: Partial<Task> }>) => void;
   deleteTask: (taskId: string) => void;
   addTemplate: (template: Template) => void;
   addAppreciationNote: (note: AppreciationNote) => void;
@@ -100,6 +101,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const batchUpdateTasks = (updates: Array<{ taskId: string; updates: Partial<Task> }>) => {
+    // Apply all updates in a single operation
+    const newTasks = tasks.map(task => {
+      const update = updates.find(u => u.taskId === task.id);
+      return update ? { ...task, ...update.updates } : task;
+    });
+    
+    setTasks(newTasks);
+    saveTasks(newTasks);
+
+    // Award points for any completed tasks
+    if (household) {
+      updates.forEach(({ taskId, updates: taskUpdates }) => {
+        if (taskUpdates.status === 'done') {
+          const task = tasks.find(t => t.id === taskId);
+          if (task && task.status !== 'done') {
+            updateMemberPoints(task.assigneeId, task.points);
+          }
+        }
+      });
+    }
+  };
+
   const deleteTask = (taskId: string) => {
     const newTasks = tasks.filter(t => t.id !== taskId);
     setTasks(newTasks);
@@ -142,6 +166,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         badges,
         addTask,
         updateTask,
+        batchUpdateTasks,
         deleteTask,
         addTemplate,
         addAppreciationNote,

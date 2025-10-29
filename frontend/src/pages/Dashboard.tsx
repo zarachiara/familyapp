@@ -1,9 +1,10 @@
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListTodo, CheckCircle2, Clock, TrendingUp, Plus } from 'lucide-react';
+import { ListTodo, CheckCircle2, Clock, TrendingUp, Plus, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TaskCard from '@/components/tasks/TaskCard';
+import SyncReminder from '@/components/sync/SyncReminder';
 
 const Dashboard = () => {
   const { household, tasks, notes } = useApp();
@@ -30,13 +31,26 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome back, {household?.members.find(m => m.id === household.managerId)?.name}! 👋
-        </h1>
-        <p className="text-purple-100">
-          You're crushing it, {household?.name}! Here's what's happening today.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome back, {household?.members.find(m => m.id === household.managerId)?.name}! 👋
+            </h1>
+            <p className="text-purple-100">
+              You're crushing it, {household?.name}! Here's what's happening today.
+            </p>
+          </div>
+          <Link to="/sync">
+            <Button variant="secondary" size="lg" className="bg-white text-purple-600 hover:bg-purple-50">
+              <RefreshCw className="w-5 h-5 mr-2" />
+              Run Fairness Sync
+            </Button>
+          </Link>
+        </div>
       </div>
+
+      {/* Sync Reminder */}
+      <SyncReminder />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -8,6 +8,7 @@ import Header from "@/components/layout/Header";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import Fairness from "./pages/Fairness";
+import FairnessSync from "./pages/FairnessSync";
 import Templates from "./pages/Templates";
 import Family from "./pages/Family";
 import Settings from "./pages/Settings";
@@ -25,6 +26,7 @@ const App = () => (
         <AppProvider>
           <Routes>
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/sync" element={<FairnessSync />} />
             <Route
               path="/*"
               element={

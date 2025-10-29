@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
-import TaskBoard from '@/components/tasks/TaskBoard';
+import TaskBoard, { TaskFilter } from '@/components/tasks/TaskBoard';
+import TaskFilters from '@/components/tasks/TaskFilters';
 import { Button } from '@/components/ui/button';
-import { Plus, Filter } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -26,6 +28,7 @@ import { showSuccess } from '@/utils/toast';
 const Tasks = () => {
   const { household, addTask } = useApp();
   const [open, setOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<TaskFilter[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -72,10 +75,20 @@ const Tasks = () => {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
+          <Link to="/sync">
+            <Button variant="outline" size="sm">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Fairness Sync
+            </Button>
+          </Link>
+
+          {household && (
+            <TaskFilters
+              members={household.members}
+              activeFilters={activeFilters}
+              onFiltersChange={setActiveFilters}
+            />
+          )}
 
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -218,7 +231,7 @@ const Tasks = () => {
         </div>
       </div>
 
-      <TaskBoard />
+      <TaskBoard activeFilters={activeFilters} />
     </div>
   );
 };
