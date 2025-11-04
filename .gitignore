@@ -27,8 +27,6 @@ ENV/
 env/
 
 # Environment Variables
-.env
-.env.local
 
 # IDEs
 .vscode/
@@ -60,3 +58,4 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+config.bat

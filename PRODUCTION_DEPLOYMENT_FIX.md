@@ -49,6 +49,10 @@ Update the backend environment variable (in Render dashboard or `.env` file):
 CORS_ORIGINS=http://localhost:5173,https://familyapp-nvvp.onrender.com
 ```
 
+**IMPORTANT:** CORS_ORIGINS should list the **FRONTEND URLs** that are allowed to call the backend.
+- ✅ Include: `https://familyapp-nvvp.onrender.com` (your frontend)
+- ❌ Do NOT include: `https://familyapp-backend.onrender.com` (that's the backend itself)
+
 **For Render Deployment:**
 1. Go to your backend service in Render dashboard
 2. Navigate to "Environment" section
