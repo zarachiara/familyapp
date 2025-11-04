@@ -101,7 +101,14 @@ async def signup(
         email=user_doc["email"],
         name=user_doc["name"],
         household_id=str(household_id),
-        created_at=user_doc["created_at"]
+        created_at=user_doc["created_at"],
+        notification_preferences=user_doc.get("notification_preferences", {
+            "email_enabled": True,
+            "task_reminders": True,
+            "weekly_digest": True,
+            "overdue_alerts": True
+        }),
+        onboarding_completed=user_doc.get("onboarding_completed", False)
     )
     
     household_response = HouseholdResponse(
@@ -173,7 +180,14 @@ async def login(
         email=user_doc["email"],
         name=user_doc["name"],
         household_id=str(user_doc["household_id"]),
-        created_at=user_doc["created_at"]
+        created_at=user_doc["created_at"],
+        notification_preferences=user_doc.get("notification_preferences", {
+            "email_enabled": True,
+            "task_reminders": True,
+            "weekly_digest": True,
+            "overdue_alerts": True
+        }),
+        onboarding_completed=user_doc.get("onboarding_completed", False)
     )
     
     household_response = HouseholdResponse(
@@ -235,7 +249,14 @@ async def get_current_user_info(
         email=current_user["email"],
         name=current_user["name"],
         household_id=str(current_user["household_id"]),
-        created_at=current_user["created_at"]
+        created_at=current_user["created_at"],
+        notification_preferences=current_user.get("notification_preferences", {
+            "email_enabled": True,
+            "task_reminders": True,
+            "weekly_digest": True,
+            "overdue_alerts": True
+        }),
+        onboarding_completed=current_user.get("onboarding_completed", False)
     )
     
     household_response = HouseholdResponse(
@@ -250,3 +271,43 @@ async def get_current_user_info(
         "user": user_response,
         "household": household_response
     }
+
+
+@router.put("/onboarding-status")
+async def update_onboarding_status(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Mark onboarding as completed for the current user.
+    
+    Returns:
+        Updated user information
+    """
+    try:
+        # Update user's onboarding status
+        result = await db.users.update_one(
+            {"_id": current_user["_id"]},
+            {"$set": {"onboarding_completed": True}}
+        )
+        
+        if result.modified_count == 0:
+            logger.warning(f"Onboarding status not updated for user {current_user['_id']}")
+        
+        logger.info(f"Onboarding completed for user: {current_user['email']}")
+        
+        # Get updated user
+        updated_user = await db.users.find_one({"_id": current_user["_id"]})
+        
+        return {
+            "success": True,
+            "message": "Onboarding status updated",
+            "onboarding_completed": updated_user.get("onboarding_completed", True)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error updating onboarding status: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update onboarding status"
+        )

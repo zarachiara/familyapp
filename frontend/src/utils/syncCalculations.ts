@@ -98,16 +98,26 @@ export function recalibrateTaskAssignments(
   const targetMinutes = new Map<string, number>();
   members.forEach(member => {
     const capacity = capacityMap.get(member.id) || 0.5;
+    const currentLoad = currentMinuteLoads.get(member.id) || 0;
     
     // Direct proportion: higher capacity = higher target
-    const target = (capacity / totalCapacity) * totalMinutes;
+    let target = (capacity / totalCapacity) * totalMinutes;
+    
+    // CRITICAL FIX: If someone has LOW capacity (< 0.4), their target should NEVER be higher than their current load
+    // This ensures low-capacity people only get tasks removed, never added
+    if (capacity < 0.4 && target > currentLoad) {
+      target = currentLoad * 0.7; // Reduce their load by 30%
+      console.log(`⚠️ Adjusting target for low-capacity ${member.name}: ${Math.round(currentLoad)} → ${Math.round(target)} (reducing load)`);
+    }
+    
     targetMinutes.set(member.id, target);
     
     console.log(`Target for ${member.name}:`, {
       capacity: `${Math.round(capacity * 100)}%`,
-      currentMinutes: currentMinuteLoads.get(member.id),
+      currentMinutes: currentLoad,
       targetMinutes: Math.round(target),
-      difference: Math.round(target - (currentMinuteLoads.get(member.id) || 0)),
+      difference: Math.round(target - currentLoad),
+      shouldGetMore: target > currentLoad,
       interpretation: capacity > 0.6 ? 'HIGH capacity - should get MORE' : capacity < 0.4 ? 'LOW capacity - should get LESS' : 'MODERATE capacity'
     });
   });

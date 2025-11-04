@@ -1,9 +1,18 @@
-import { Home, ListTodo, BarChart3, FileText, Users, Settings } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Home, ListTodo, BarChart3, FileText, Users, Settings, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const navItems = [
     { path: '/', icon: Home, label: 'Dashboard' },
@@ -40,12 +49,27 @@ const Header = () => {
             ))}
           </nav>
 
-          <Link
-            to="/settings"
-            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center space-x-2">
+            {user && (
+              <span className="text-sm text-gray-600 hidden md:block">
+                {user.username}
+              </span>
+            )}
+            <Link
+              to="/settings"
+              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

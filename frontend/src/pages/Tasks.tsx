@@ -28,7 +28,7 @@ import { showSuccess } from '@/utils/toast';
 const Tasks = () => {
   const { household, addTask } = useApp();
   const [open, setOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<TaskFilter[]>([]);
+  const [activeFilters, setActiveFilters] = useState<TaskFilter[]>(['due-this-week']);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -126,16 +126,16 @@ const Tasks = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="assignee">Assign To *</Label>
+                    <Label htmlFor="assignee">Assign To</Label>
                     <Select
-                      value={formData.assigneeId}
-                      onValueChange={value => setFormData({ ...formData, assigneeId: value })}
-                      required
+                      value={formData.assigneeId || 'unassigned'}
+                      onValueChange={value => setFormData({ ...formData, assigneeId: value === 'unassigned' ? '' : value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select member" />
+                        <SelectValue placeholder="Unassigned" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="unassigned">Unassigned</SelectItem>
                         {household?.members.map(member => (
                           <SelectItem key={member.id} value={member.id}>
                             {member.avatar} {member.name}
@@ -146,13 +146,12 @@ const Tasks = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="dueDate">Due Date *</Label>
+                    <Label htmlFor="dueDate">Due Date (Optional)</Label>
                     <Input
                       id="dueDate"
                       type="datetime-local"
                       value={formData.dueDate}
                       onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                      required
                     />
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { OnboardingState, OnboardingMember, OnboardingTask, TaskRating } from '@/types/onboarding';
-import { defaultOnboardingTasks } from '@/utils/onboardingTasks';
+import { defaultOnboardingTasks, sampleTasksForRounds } from '@/utils/onboardingTasks';
 import { calculateOptimalAssignments } from '@/utils/taskAssignment';
 
 const AVATAR_OPTIONS = ['👨‍💼', '👩‍💼', '👨', '👩', '👦', '👧', '🧑', '👴', '👵'];
@@ -12,9 +12,12 @@ export const useOnboardingState = () => {
     householdName: '',
     members: [],
     tasks: defaultOnboardingTasks,
+    sampledTasks: [],
     ratings: [],
     assignments: [],
     currentRatingMember: 0,
+    currentRound: 0,
+    totalRounds: 0,
     isComplete: false,
   });
 
@@ -86,13 +89,87 @@ export const useOnboardingState = () => {
     return rating?.rating || 0;
   };
 
+  // Infer ratings for unrated tasks based on domain patterns and category similarity
+  const inferRatingsForUnratedTasks = () => {
+    const allTasks = state.tasks;
+    const sampledTaskIds = new Set(state.sampledTasks.map(t => t.id));
+    const unratedTasks = allTasks.filter(t => !sampledTaskIds.has(t.id));
+
+    const inferredRatings: TaskRating[] = [];
+
+    state.members.forEach(member => {
+      // Get member's ratings for sampled tasks
+      const memberRatings = state.ratings.filter(r => r.memberId === member.id);
+      
+      // Calculate average rating per domain
+      const domainAverages = new Map<string, { sum: number; count: number }>();
+      // Calculate average rating per category
+      const categoryAverages = new Map<string, { sum: number; count: number }>();
+      
+      memberRatings.forEach(rating => {
+        const task = state.sampledTasks.find(t => t.id === rating.taskId);
+        if (task) {
+          // Domain averages
+          const domainCurrent = domainAverages.get(task.domain) || { sum: 0, count: 0 };
+          domainAverages.set(task.domain, {
+            sum: domainCurrent.sum + rating.rating,
+            count: domainCurrent.count + 1,
+          });
+          
+          // Category averages
+          const categoryCurrent = categoryAverages.get(task.category) || { sum: 0, count: 0 };
+          categoryAverages.set(task.category, {
+            sum: categoryCurrent.sum + rating.rating,
+            count: categoryCurrent.count + 1,
+          });
+        }
+      });
+
+      // Infer ratings for unrated tasks using weighted average of domain and category
+      unratedTasks.forEach(task => {
+        const domainAvg = domainAverages.get(task.domain);
+        const categoryAvg = categoryAverages.get(task.category);
+        
+        let inferredRating = 3; // Default neutral
+        
+        if (domainAvg && categoryAvg) {
+          // Weight domain more heavily (70%) than category (30%)
+          const domainScore = domainAvg.sum / domainAvg.count;
+          const categoryScore = categoryAvg.sum / categoryAvg.count;
+          inferredRating = Math.round(domainScore * 0.7 + categoryScore * 0.3);
+        } else if (domainAvg) {
+          // Only domain data available
+          inferredRating = Math.round(domainAvg.sum / domainAvg.count);
+        } else if (categoryAvg) {
+          // Only category data available
+          inferredRating = Math.round(categoryAvg.sum / categoryAvg.count);
+        }
+        
+        // Ensure rating is within valid range
+        inferredRating = Math.max(1, Math.min(5, inferredRating));
+        
+        inferredRatings.push({
+          taskId: task.id,
+          memberId: member.id,
+          rating: inferredRating,
+        });
+      });
+    });
+
+    return inferredRatings;
+  };
+
   const nextRatingMember = () => {
     if (state.currentRatingMember < state.members.length - 1) {
       setState(prev => ({ ...prev, currentRatingMember: prev.currentRatingMember + 1 }));
     } else {
-      // All members have rated, calculate assignments
-      const assignments = calculateOptimalAssignments(state.tasks, state.ratings, state.members);
-      setState(prev => ({ ...prev, assignments, step: 4 }));
+      // All members have rated sampled tasks, infer the rest
+      const inferredRatings = inferRatingsForUnratedTasks();
+      const allRatings = [...state.ratings, ...inferredRatings];
+      
+      // Calculate assignments with all ratings (sampled + inferred)
+      const assignments = calculateOptimalAssignments(state.tasks, allRatings, state.members);
+      setState(prev => ({ ...prev, ratings: allRatings, assignments, step: 4 }));
     }
   };
 
@@ -112,7 +189,16 @@ export const useOnboardingState = () => {
   };
 
   const nextStep = () => {
-    if (state.step === 3) {
+    if (state.step === 2) {
+      // Moving from task list to rating - sample max 10 tasks to avoid user fatigue
+      const sampledTasks = sampleTasksForRounds(10); // Max 10 tasks for rating
+      setState(prev => ({
+        ...prev,
+        step: 3,
+        sampledTasks,
+        totalRounds: 1, // Single round with all sampled tasks
+      }));
+    } else if (state.step === 3) {
       nextRatingMember();
     } else {
       setState(prev => ({ ...prev, step: prev.step + 1 }));
@@ -136,7 +222,7 @@ export const useOnboardingState = () => {
       case 3:
         const currentMember = state.members[state.currentRatingMember];
         const memberRatings = state.ratings.filter(r => r.memberId === currentMember.id);
-        return memberRatings.length === state.tasks.length;
+        return memberRatings.length === state.sampledTasks.length;
       case 4:
       case 5:
         return true;

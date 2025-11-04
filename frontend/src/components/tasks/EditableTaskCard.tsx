@@ -28,7 +28,7 @@ const EditableTaskCard = ({ task, members, onUpdate, onCheck }: EditableTaskCard
   const [editedTask, setEditedTask] = useState(task);
   const [showRecurringModal, setShowRecurringModal] = useState(false);
 
-  const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'done';
+  const isOverdue = task.dueDate ? new Date(task.dueDate) < new Date() && task.status !== 'done' : false;
   const isDone = task.status === 'done';
   const assignedMember = members.find(m => m.id === task.assigneeId);
 
@@ -118,7 +118,7 @@ const EditableTaskCard = ({ task, members, onUpdate, onCheck }: EditableTaskCard
               >
                 <Repeat className="w-3 h-3 mr-2" />
                 <span className="text-xs">
-                  {format(new Date(editedTask.dueDate), 'MMM d, yyyy')} • {getRecurrenceDisplay()}
+                  {editedTask.dueDate ? format(new Date(editedTask.dueDate), 'MMM d, yyyy') : 'No due date'} • {getRecurrenceDisplay()}
                 </span>
               </Button>
             </div>
@@ -226,13 +226,20 @@ const EditableTaskCard = ({ task, members, onUpdate, onCheck }: EditableTaskCard
         {/* Task Metadata */}
         <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
           {/* Due Date */}
-          <div className={cn(
-            'flex items-center gap-1',
-            isOverdue && 'text-red-600 font-medium'
-          )}>
-            <Calendar className="w-3 h-3" />
-            <span>{format(new Date(task.dueDate), 'MMM d, h:mm a')}</span>
-          </div>
+          {task.dueDate ? (
+            <div className={cn(
+              'flex items-center gap-1',
+              isOverdue && 'text-red-600 font-medium'
+            )}>
+              <Calendar className="w-3 h-3" />
+              <span>{format(new Date(task.dueDate), 'MMM d, h:mm a')}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-gray-400">
+              <Calendar className="w-3 h-3" />
+              <span>No due date</span>
+            </div>
+          )}
 
           {/* Duration */}
           <div className="flex items-center gap-1">
@@ -241,10 +248,17 @@ const EditableTaskCard = ({ task, members, onUpdate, onCheck }: EditableTaskCard
           </div>
 
           {/* Assigned Member */}
-          <div className="flex items-center gap-1">
-            <User className="w-3 h-3" />
-            <span>{assignedMember?.avatar} {assignedMember?.name}</span>
-          </div>
+          {assignedMember ? (
+            <div className="flex items-center gap-1">
+              <User className="w-3 h-3" />
+              <span>{assignedMember.avatar} {assignedMember.name}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-gray-400">
+              <User className="w-3 h-3" />
+              <span>Unassigned</span>
+            </div>
+          )}
 
           {/* Room/Category */}
           {task.room && (

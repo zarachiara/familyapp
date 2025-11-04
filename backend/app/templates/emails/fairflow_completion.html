@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FairFlow Complete</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        .content {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        .summary-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #38b2ac;
+        }
+        .summary-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .highlight {
+            color: #38b2ac;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            background: #38b2ac;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #718096;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 FairFlow Rebalancing Complete</h1>
+    </div>
+    <div class="content">
+        <p>Hi {{ user_name }},</p>
+        <p>The FairFlow rebalancing process has been completed for <strong>{{ household_name }}</strong>!</p>
+        
+        <div class="summary-box">
+            <h3>Rebalancing Summary</h3>
+            {% for key, value in rebalance_summary.items() %}
+            <div class="summary-item">
+                <strong>{{ key }}:</strong> <span class="highlight">{{ value }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <p>Tasks have been redistributed to maintain fairness across all household members. Check your dashboard to see your updated task assignments.</p>
+        
+        <a href="#" class="button">View Dashboard</a>
+        
+        <div class="footer">
+            <p>You're receiving this email because you have FairFlow update notifications enabled.</p>
+            <p>© 2024 FairShare. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

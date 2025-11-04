@@ -38,7 +38,7 @@ const STEP_COLORS = {
 
 const FairnessSync = () => {
   const navigate = useNavigate();
-  const { household, tasks, batchUpdateTasks } = useApp();
+  const { household, tasks, batchUpdateTasks, restoreToEquilibrium } = useApp();
 
   if (!household) {
     navigate('/');
@@ -125,6 +125,12 @@ const FairnessSync = () => {
     navigate('/tasks');
   };
 
+  const handleRestoreToEquilibrium = () => {
+    restoreToEquilibrium();
+    showSuccess('⚖️ Household restored to your default equilibrium');
+    navigate('/tasks');
+  };
+
   const currentMember = household.members[state.currentCapacityMember];
   const StepIcon = STEP_ICONS[state.currentStep as keyof typeof STEP_ICONS];
   const stepTitle = typeof STEP_TITLES[state.currentStep as keyof typeof STEP_TITLES] === 'function'
@@ -203,6 +209,7 @@ const FairnessSync = () => {
                 fairnessScore={95} // This would come from the recalibration result
                 memberCount={household.members.length}
                 tasksAffected={tasksAffected}
+                onRestoreToEquilibrium={handleRestoreToEquilibrium}
               />
             )}
           </CardContent>

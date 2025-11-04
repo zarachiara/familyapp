@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
 from bson import ObjectId
+from app.models.notification import NotificationPreferences
 
 
 class PyObjectId(ObjectId):
@@ -46,6 +47,8 @@ class UserInDB(UserBase):
     password_hash: str
     household_id: PyObjectId
     created_at: datetime
+    notification_preferences: NotificationPreferences = Field(default_factory=NotificationPreferences)
+    onboarding_completed: bool = False
     
     class Config:
         populate_by_name = True
@@ -61,6 +64,8 @@ class UserResponse(UserBase):
     id: str
     household_id: str
     created_at: datetime
+    notification_preferences: NotificationPreferences
+    onboarding_completed: bool = False
     
     class Config:
         json_encoders = {

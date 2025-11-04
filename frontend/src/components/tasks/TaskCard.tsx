@@ -14,8 +14,10 @@ interface TaskCardProps {
 }
 
 const TaskCard = ({ task, member, onClick, draggable = false, onDragStart }: TaskCardProps) => {
-  const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'done';
+  // Safely parse the due date
   const dueDate = new Date(task.dueDate);
+  const isValidDate = !isNaN(dueDate.getTime());
+  const isOverdue = isValidDate && dueDate < new Date() && task.status !== 'done';
 
   return (
     <Card
@@ -50,7 +52,7 @@ const TaskCard = ({ task, member, onClick, draggable = false, onDragStart }: Tas
           <div className="flex items-center space-x-1">
             <Calendar className="w-3 h-3" />
             <span className={cn(isOverdue && 'text-red-600 font-medium')}>
-              {format(dueDate, 'MMM d')}
+              {isValidDate ? format(dueDate, 'MMM d') : 'Invalid date'}
             </span>
           </div>
 

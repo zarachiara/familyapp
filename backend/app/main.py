@@ -5,7 +5,7 @@ import logging
 
 from app.config import settings
 from app.database import connect_to_mongodb, close_mongodb_connection, get_database
-from app.routers import auth, scheduler
+from app.routers import auth, scheduler, notifications, household, tasks, equilibrium, sync, templates, notes, badges
 from app.services import initialize_scheduler, shutdown_scheduler, register_all_handlers
 
 # Configure logging
@@ -83,8 +83,16 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(scheduler.router, prefix="/api/scheduler", tags=["Scheduler"])
+app.include_router(auth.router)
+app.include_router(scheduler.router)
+app.include_router(notifications.router)
+app.include_router(household.router)
+app.include_router(tasks.router)
+app.include_router(equilibrium.router)
+app.include_router(sync.router)
+app.include_router(templates.router)
+app.include_router(notes.router)
+app.include_router(badges.router)
 
 
 @app.get("/")

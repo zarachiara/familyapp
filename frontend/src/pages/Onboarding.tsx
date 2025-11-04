@@ -13,6 +13,8 @@ import { useOnboardingState } from '@/hooks/useOnboardingState';
 import { useApp } from '@/contexts/AppContext';
 import { showSuccess } from '@/utils/toast';
 import { getWorkloadBalance, calculateFairnessScore } from '@/utils/taskAssignment';
+import { saveTasks } from '@/utils/storage';
+import type { RecurrencePattern } from '@/types';
 
 const STEP_LABELS = ['Setup', 'Tasks', 'Rate', 'Reveal', 'Balance', 'Complete'];
 
@@ -45,7 +47,7 @@ const STEP_COLORS = {
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { initializeApp } = useApp();
+  const { initializeApp, setHousehold, setOnboardingComplete } = useApp();
   
   const {
     state,
@@ -86,6 +88,11 @@ const Onboarding = () => {
         dueDate.setDate(dueDate.getDate() + 14);
       }
 
+      const recurrence: RecurrencePattern =
+        task.category === 'daily' ? 'daily' :
+        task.category === 'weekly' ? 'weekly' :
+        'monthly';
+
       return {
         id: `task-${Date.now()}-${index}`,
         title: task.name,
@@ -93,7 +100,7 @@ const Onboarding = () => {
         assigneeId: assignment.assignedTo,
         dueDate: dueDate.toISOString(),
         status: 'todo' as const,
-        recurrence: task.category === 'daily' ? 'daily' : task.category === 'weekly' ? 'weekly' : 'monthly',
+        recurrence,
         room: 'General',
         points: task.defaultPoints,
         createdBy: household.managerId,
@@ -102,8 +109,14 @@ const Onboarding = () => {
       };
     });
 
-    localStorage.setItem('familyflow_household', JSON.stringify(household));
-    localStorage.setItem('familyflow_tasks', JSON.stringify(tasks));
+    // Save household using the context method (which uses user-specific storage)
+    setHousehold(household);
+    
+    // Save tasks using user-specific storage
+    saveTasks(tasks);
+    
+    // Mark onboarding as complete
+    setOnboardingComplete(true);
     
     showSuccess('🎉 Welcome to FamilyFlow! Your household is all set up.');
     initializeApp();
@@ -167,7 +180,7 @@ const Onboarding = () => {
 
             {state.step === 3 && (
               <Step3Rating
-                tasks={state.tasks}
+                tasks={state.sampledTasks}
                 currentMember={currentMember}
                 currentMemberIndex={state.currentRatingMember}
                 totalMembers={state.members.length}

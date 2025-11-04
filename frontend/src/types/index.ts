@@ -61,3 +61,27 @@ export interface Household {
   members: FamilyMember[];
   managerId: string;
 }
+
+// Equilibrium (Default Distribution) Types
+export interface MemberCapacitySnapshot {
+  memberId: string;
+  memberName: string;
+  workloadLevel: number;
+  energyLevel: number;
+  emotionalCapacity: number;
+}
+
+export interface EquilibriumSnapshot {
+  id: string;
+  timestamp: string;
+  assignments: Record<string, string[]>; // memberId -> taskIds[]
+  fairnessScore: number;
+  capacities: MemberCapacitySnapshot[];
+  description?: string;
+  isActive: boolean;
+}
+
+export interface EquilibriumState {
+  currentEquilibrium: EquilibriumSnapshot | null;
+  history: EquilibriumSnapshot[];
+}

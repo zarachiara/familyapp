@@ -1,17 +1,23 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Calendar, Users, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle, Calendar, Users, TrendingUp, RotateCcw, Info } from 'lucide-react';
+import { useApp } from '@/contexts/AppContext';
 
 interface SyncStep4Props {
   fairnessScore: number;
   memberCount: number;
   tasksAffected: number;
+  onRestoreToEquilibrium?: () => void;
 }
 
 const SyncStep4Complete = ({
   fairnessScore,
   memberCount,
   tasksAffected,
+  onRestoreToEquilibrium,
 }: SyncStep4Props) => {
+  const { currentEquilibrium } = useApp();
   return (
     <div className="space-y-6">
       <div className="text-center space-y-4">
@@ -88,6 +94,35 @@ const SyncStep4Complete = ({
           </ul>
         </CardContent>
       </Card>
+
+      {/* Equilibrium Restore Prompt */}
+      {currentEquilibrium && onRestoreToEquilibrium && (
+        <Alert className="border-2 border-blue-200 bg-blue-50">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription>
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="font-semibold text-blue-900 mb-1">
+                  🔄 Return to Your Default Distribution?
+                </p>
+                <p className="text-sm text-blue-800">
+                  This ReSync was temporary. Would you like to restore your household to its saved default equilibrium?
+                  Your current distribution will be saved in history.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onRestoreToEquilibrium}
+                className="ml-4 border-blue-300 text-blue-700 hover:bg-blue-100 whitespace-nowrap"
+              >
+                <RotateCcw className="w-3 h-3 mr-1" />
+                Restore Default
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <p className="text-sm text-yellow-800">

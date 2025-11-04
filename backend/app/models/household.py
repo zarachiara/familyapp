@@ -5,6 +5,13 @@ from bson import ObjectId
 from app.models.user import PyObjectId
 
 
+class WeeklyCommitment(BaseModel):
+    """Weekly commitment tracking."""
+    week_key: str  # Format: "YYYY-WW"
+    task_count: int
+    committed_at: datetime
+
+
 class Member(BaseModel):
     """Household member embedded document."""
     id: str
@@ -32,6 +39,7 @@ class HouseholdInDB(HouseholdBase):
     manager_id: PyObjectId
     members: List[Member] = []
     created_at: datetime
+    weekly_commitment: Optional[WeeklyCommitment] = None
     
     class Config:
         populate_by_name = True
@@ -48,6 +56,7 @@ class HouseholdResponse(HouseholdBase):
     manager_id: str
     members: List[Member]
     created_at: datetime
+    weekly_commitment: Optional[WeeklyCommitment] = None
     
     class Config:
         json_encoders = {

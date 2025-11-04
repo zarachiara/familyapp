@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     jwt_secret: str
     jwt_expires_in: int = 604800  # 7 days in seconds
     
+    # Email settings (Brevo)
+    brevo_api_key: str = ""
+    sender_email: str = "noreply@fairshare.app"
+    sender_name: str = "FairShare"
+    
     # CORS settings
     cors_origins: str = "http://localhost:5173"
     
