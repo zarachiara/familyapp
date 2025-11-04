@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     sender_name: str = "FairShare"
     
     # CORS settings
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://localhost:5173,https://familyapp-nvvp.onrender.com"
     
     model_config = SettingsConfigDict(
         env_file=".env",
